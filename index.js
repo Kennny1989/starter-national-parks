@@ -75,6 +75,7 @@ const allRatings = document.querySelectorAll(".rating-display");
             const firstBtn = document.querySelector("button");
             firstBtn.addEventListener("click", (event) => {
                 console.log("You clicked the button", event);
+            });
 
             firstBtn.addEventListener("click", (event) => {
                 console.log(event.target);
