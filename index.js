@@ -313,9 +313,141 @@ if (!Object.keys(errors).length) {
     console.log(name);
 
 
-const main = () => {
+const submitListener = () => {
     const form = document.querySelector("#park-form");
     form.addEventListener("submit", submitHandler);
+};
+
+//RENDER PATTERN//
+
+
+
+const sortByName = (parkA, parkB) => {
+    const parkAName = parkA.name;
+    const parkBName = parkB.name;
+    if (parkAName < parkBName) {
+      return -1;
+    } else if (parkAName > parkBName) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
+  const sortByRating = (parkA, parkB) => {
+    const parkARating = parseFloat(parkA.rating);
+    const parkBRating = parseFloat(parkB.rating);
+    return parkBRating - parkARating;
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+  
+    const form = document.querySelector("#park-form");
+    const formData = new FormData(form);
+  
+    // Keep track of if any errors are found
+    let hasErrors = false;
+  
+    // Validation code skipped for brevity
+    // ...
+  
+    // If there are no errors
+    if (!hasErrors) {
+      // Create an empty object
+      const park = {
+        name: formData.get("name"),
+        location: formData.get("location"),
+        description: formData.get("description"),
+        established: formData.get("established"),
+        area: formData.get("area"),
+        rating: formData.get("rating"),
+      };
+  
+      parks.push(park);
+  
+      render();
+    }
+  };
+
+  const nameSorterClickHandler = (event) => {
+    event.preventDefault();
+  
+    parks.sort(sortByName);
+  
+    render();
+  };
+
+const renderOnePark = (park) => {
+    //get the individual properties of the park
+    const { name, location, description, area, established, rating } = park;
+
+    const content = `
+      <section class="park-display">
+        <h2>${name}</h2>
+        <div class="location-display">${location}</div>
+        <div class="description-display">${description}</div>
+        <button class="rate-button" title="Add to Favourites">&#9734;</button>
+        <div class="stats">
+          <div class="established-display stat">
+            <h3>Established</h3>
+            <div class="value">${established}</div>
+          </div>
+          <div class="area-display stat">
+            <h3>Area</h3>
+            <div class="value">${area}</div>
+          </div>
+          <div class="rating-display stat">
+            <h3>Rating</h3>
+            <div class="value">${rating}</div>
+          </div>
+        </div>
+      </section>
+  `;
+  return content;
+};
+
+const render = () => {
+    //get the parent element
+    const main = document.querySelector("main");
+    //empty parent element
+    main.innerHTML = "";
+    //get the parks html
+    const content = parks.map(renderOnePark).join("");
+    //set the innerhtml of parent element
+    main.innerHTML = content;
+}
+
+const favoriteButtonClickHandler = (event) => {
+    if (event.target && event.target.nodeName == "BUTTON") {
+      const park = event.target.parentNode;
+      park.style.backgroundColor = "#c8e6c9";
+    }
+  };
+
+const main = () => {
+    //select all buttons for the park
+    const main = document.querySelector("main");
+    //add event hanler to the main
+    main.addEventListener("click", favoriteButtonClickHandler);
+    const nameSorter = document.querySelector("#name-sorter");
+
+  // add an event listener
+  nameSorter.addEventListener("click", nameSorterClickHandler);
+
+  // select the ratingSorter link
+  const ratingSorter = document.querySelector("#rating-sorter");
+
+  // add an event listener
+  ratingSorter.addEventListener("click", ratingSorterClickHandler);
+  // get the form element
+  const form = document.querySelector("#park-form");
+
+  // attach the submit handler
+  form.addEventListener("submit", submitHandler);
+  
+  //call render()
+  render();
 };
 
   window.addEventListener("DOMContentLoaded", main);
